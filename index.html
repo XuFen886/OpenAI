@@ -38,9 +38,9 @@
 
         // 如果没有保存 Key，就提示输入
         if (!apiKey) {
-            apiKey = prompt("请输入你的 OpenAI API Key（sk- 开头）：");
+            apiKey = prompt("请输入你的 OpenAI API Key（以 sk- 开头）：");
             if (!apiKey) return;
-            localStorage.setItem("openai_key", apiKey);   // 浏览器记住 Key
+            localStorage.setItem("openai_key", apiKey);
         }
 
         // 显示用户消息
