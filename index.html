@@ -1,20 +1,69 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Website</title>
-    <link rel="stylesheet" href="style.css">
+    <title>我的AI助手</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f4f4f4; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h1 { text-align: center; }
+        textarea { width: 100%; height: 100px; padding: 10px; margin: 10px 0; }
+        button { padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        #chatBox { margin-top: 20px; min-height: 300px; border: 1px solid #ddd; padding: 10px; border-radius: 5px; }
+        .message { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .user { background: #007bff; color: white; text-align: right; }
+        .ai { background: #f1f1f1; }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>Welcome to Your AI Website</h1>
-        <p>Interact with AI by typing your questions below:</p>
-        <textarea id="userInput" placeholder="Ask the AI something..."></textarea>
-        <button onclick="sendMessage()">Send</button>
+        <h1>欢迎来到我的AI网站</h1>
+        <p>输入问题后点击发送</p>
+        
+        <textarea id="userInput" placeholder="问人工智能一些问题......"></textarea>
+        <button onclick="sendMessage()">发送</button>
+        
         <div id="chatBox"></div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        const apiKey = “”；
+
+        async function sendMessage() {
+            const input = document.getElementById("userInput");
+            const chatBox = document.getElementById("chatBox");
+            const message = input.value.trim();
+            
+            if (!message) return;
+            if (!apiKey || apiKey === "sk-") {
+                alert("请先配置你的 OpenAI API Key！");
+                return;
+            }
+
+            // 显示用户消息
+            chatBox.innerHTML += `<div class="message user">${message}</div>`;
+            input.value = "";
+
+            // 调用 OpenAI
+            const response = await fetch("https://api.openai.com/v1/chat/completions", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${apiKey}`
+                },
+                body: JSON.stringify({
+                    model: "gpt-4o-mini",     // 便宜又好用的模型
+                    messages: [{ role: "user", content: message }]
+                })
+            });
+
+            const data = await response.json();
+            const aiReply = data.choices[0].message.content;
+            
+            chatBox.innerHTML += `<div class="message ai">${aiReply}</div>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    </script>
 </body>
 </html>
